@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>AI Chatbot: Data Structures & Algorithms</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: #f5f5f5;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .chat-wrapper {
+      margin-top: 30px;
+      width: 100%;
+      max-width: 500px;
+      background: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      height: 90vh;
+      overflow: hidden;
+    }
+
+    .chat-header {
+      background: #007acc;
+      color: #ffffff;
+      padding: 15px;
+      font-size: 20px;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    .chat-body {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .message {
+      max-width: 75%;
+      padding: 10px 15px;
+      border-radius: 18px;
+      font-size: 14px;
+      line-height: 1.4;
+      word-wrap: break-word;
+    }
+
+    .bot-msg {
+      background: #eeeeee;
+      align-self: flex-start;
+    }
+
+    .user-msg {
+      background: #d1eaff;
+      align-self: flex-end;
+    }
+
+    .chat-input {
+      display: flex;
+      padding: 15px;
+      border-top: 1px solid #ddd;
+    }
+
+    .chat-input input {
+      flex: 1;
+      padding: 10px 14px;
+      font-size: 14px;
+      border-radius: 20px;
+      border: 1px solid #ccc;
+      outline: none;
+    }
+
+    .chat-input button {
+      margin-left: 10px;
+      padding: 10px 20px;
+      background: #007acc;
+      color: white;
+      border: none;
+      border-radius: 20px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="chat-wrapper">
+    <div class="chat-header">🤖 DSA Chatbot AI</div>
+    <div class="chat-body" id="chatBody">
+      <div class="message bot-msg">Welcome! Feel free to ask any questions about Data Structures & Algorithms 😊</div>
+    </div>
+    <div class="chat-input">
+      <input type="text" id="userInput" placeholder="Type your question here...">
+      <button onclick="sendMessage()">Send</button>
+    </div>
+  </div>
+
+  <script>
+    let responses = {
+      "stack": "A Stack is a data structure that follows LIFO (Last In First Out) principle. You can push and pop items from one end only.",
+      "queue": "A Queue is a data structure that follows FIFO (First In First Out). You enqueue at the back and dequeue from the front.",
+      "linked list": "A Linked List is a linear data structure where each element is a separate object called a node connected via pointers.",
+      "binary search": "Binary Search is a fast search algorithm that works on sorted data by repeatedly dividing the search interval in half.",
+      "big-o": "Big-O notation describes the performance or complexity of an algorithm. Examples include O(1), O(n), O(log n), O(n^2).",
+      "merge sort": "Merge Sort is a divide and conquer algorithm with a time complexity of O(n log n). It recursively splits and merges arrays.",
+      "quick sort": "Quick Sort is a highly efficient sorting algorithm that uses partitioning. Average time complexity is O(n log n).",
+      "graph": "A Graph is a non-linear data structure consisting of nodes (vertices) and edges connecting them.",
+      "tree": "A Tree is a hierarchical data structure without cycles. It has root, parent, and child nodes.",
+      "hash table": "A Hash Table is a data structure that maps keys to values using a hash function for fast access."
+    };
+
+    function sendMessage() {
+      const input = document.getElementById('userInput');
+      const text = input.value.trim();
+      if (!text) return;
+
+      appendMessage(text, 'user');
+      const lowerText = text.toLowerCase();
+      let reply = "Sorry, I don't understand that question yet. Could you teach me the correct answer? (Type: teach:question=answer)";
+
+      for (let key in responses) {
+        if (lowerText.includes(key)) {
+          reply = responses[key];
+          break;
+        }
+      }
+
+      // Learning mode: if user teaches the bot
+      if (lowerText.startsWith("teach:")) {
+        const content = lowerText.substring(6).split("=");
+        if (content.length === 2) {
+          const newQuestion = content[0].trim();
+          const newAnswer = content[1].trim();
+          responses[newQuestion] = newAnswer;
+          reply = `Thanks! I've learned how to answer: "${newQuestion}"`;
+        } else {
+          reply = "Teaching format is incorrect. Please use: teach:question=answer";
+        }
+      }
+
+      setTimeout(() => appendMessage(reply, 'bot'), 500);
+      input.value = "";
+    }
+
+    function appendMessage(text, sender) {
+      const msgDiv = document.createElement('div');
+      msgDiv.className = `message ${sender}-msg`;
+      msgDiv.textContent = text;
+      document.getElementById('chatBody').appendChild(msgDiv);
+      document.getElementById('chatBody').scrollTop = document.getElementById('chatBody').scrollHeight;
+    }
+  </script>
+</body>
+</html>
